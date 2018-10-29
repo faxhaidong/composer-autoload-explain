@@ -54,8 +54,8 @@ class ClassLoader
     private $useIncludePath = false;
     private $classMap = array();
     private $classMapAuthoritative = false;//未在classmap中查找到对应关系，是否返回失败
-    private $missingClasses = array();
-    private $apcuPrefix;
+    private $missingClasses = array();//查找失败的类记录到该数组
+    private $apcuPrefix;//是否开启共享缓存
 
     public function getPrefixes()
     {
@@ -87,6 +87,7 @@ class ClassLoader
     }
 
     /**
+     * 添加文件映射关系数组
      * @param array $classMap Class to filename map
      */
     public function addClassMap(array $classMap)
@@ -192,6 +193,7 @@ class ClassLoader
     }
 
     /**
+     * 设置Psr0命名规则的相关参数
      * Registers a set of PSR-0 directories for a given prefix,
      * replacing any others previously set for this prefix.
      *
@@ -208,6 +210,7 @@ class ClassLoader
     }
 
     /**
+     * 设置符合psr4命名规则的相关参数
      * Registers a set of PSR-4 directories for a given namespace,
      * replacing any others previously set for this namespace.
      *
@@ -222,6 +225,7 @@ class ClassLoader
             $this->fallbackDirsPsr4 = (array) $paths;
         } else {
             $length = strlen($prefix);
+            //检测最后一个字符是否为\,确定是否为psr4的命名规则
             if ('\\' !== $prefix[$length - 1]) {
                 throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
             }
@@ -446,7 +450,7 @@ class ClassLoader
         }
 
         // PSR-0 include paths.
-        // 流形式解析文件
+        // 根据设定的文件加载目录进行查找匹配
         if ($this->useIncludePath && $file = stream_resolve_include_path($logicalPathPsr0)) {
             return $file;
         }

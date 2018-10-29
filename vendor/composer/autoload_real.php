@@ -41,7 +41,7 @@ class ComposerAutoloaderInit317f87690cc672424675c654df64f31c
             //执行自动加载类的初始化方法
             call_user_func(\Composer\Autoload\ComposerStaticInit317f87690cc672424675c654df64f31c::getInitializer($loader));
         } else {
-            //设置单独namespace和文件目录的映射关系
+            //设置符合psr0命名规则的namespace和文件目录的映射关系
             $map = require __DIR__ . '/autoload_namespaces.php';
             foreach ($map as $namespace => $path) {
                 $loader->set($namespace, $path);
